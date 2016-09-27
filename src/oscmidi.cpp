@@ -97,7 +97,7 @@ void process_options(int in_argc, char **in_argv) {
     } else if ((*i == "-v") || (*i == "--verbose")) {
       arguments.verbose = 1;
     } else if ((*i == "-t") || (*i == "--tcp")) {
-      arguments.tcp = 0;
+      arguments.tcp = 1;
     } else {
       cerr << "Wrong argument: " << *i << endl;
     }
