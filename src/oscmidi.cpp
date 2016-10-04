@@ -432,7 +432,7 @@ int main(int argc, char** argv)
    */
   
   if (arguments.rport.size() == 0) {
-    arguments.rport == arguments.port;
+    arguments.rport = arguments.port;
   }
   
   lo_server_thread st;
