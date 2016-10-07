@@ -23,6 +23,18 @@ make
 sudo make install
 ```
 
+OSC messages managed by oscmidi:
+ - MIDI Note off          (SND_SEQ_EVENT_NOTEOFF):    "/oscmidi/noteoff"   + <control channel> + <note>  + <velocity>
+ - MIDI Note on           (SND_SEQ_EVENT_NOTEON):     "/oscmidi/noteon"    + <control channel> + <note>  + <velocity>
+ - MIDI Pressure change   (SND_SEQ_EVENT_KEYPRESS):   "/oscmidi/keypress"  + <control channel> + <note>  + <velocity>
+ - MIDI Controller Change (SND_SEQ_EVENT_CONTROLLER): "/oscmidi/cc"        + <control channel> + <param> + <value>
+ - MIDI Program Change    (SND_SEQ_EVENT_PGMCHANGE):  "/oscmidi/pgmchange" + <control channel> + <value>
+ - MIDI Channel Pressure  (SND_SEQ_EVENT_CHANPRESS):  "/oscmidi/chanpress" + <control channel> + <value>
+ - MIDI Pitch bend        (SND_SEQ_EVENT_PITCHBEND):  "/oscmidi/pitchbend" + <control channel> + <value>
+ - MIDI Start             (SND_SEQ_EVENT_START):      "/oscmidi/start"     + 1
+ - MIDI Continue          (SND_SEQ_EVENT_CONTINUE):   "/oscmidi/continue"  + 1
+ - MIDI Start             (SND_SEQ_EVENT_STOP):       "/oscmidi/stop"      + 1
+
 Copyright (C) 2011  Jari Suominen (Original author)
 
 Copyright (C) 2014  Yann Collette (CMake + some changes in the code)
