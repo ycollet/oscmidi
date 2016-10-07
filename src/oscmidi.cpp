@@ -366,7 +366,10 @@ int process_incoming_osc(const char *path, const char *types, lo_arg ** argv,
 	cout << "\t" << (int)ev.data.note.note << "\t" << (int)ev.data.note.velocity << endl;
       }             				
     } else if (std::strcmp(path, "/oscmidi/cc") == 0 && argc == 3) {
-      snd_seq_ev_set_controller(&ev, argv[0]->i, argv[1]->i, argv[2]->i);
+      if((char)*(types+2) == 'i')
+        snd_seq_ev_set_controller(&ev, argv[0]->i, argv[1]->i, argv[2]->i);
+      else if((char)*(types+2) == 'f')
+        snd_seq_ev_set_controller(&ev, argv[0]->i, argv[1]->i, argv[2]->f);
       if (arguments.verbose) {
 	cout << "\tOSC  Controller Change\t" << (int)ev.data.control.channel;
 	cout << "\t" << (int)ev.data.control.param << "\t" << (int)ev.data.control.value << endl;
