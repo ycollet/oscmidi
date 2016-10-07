@@ -253,6 +253,30 @@ void send_midi_action_as_osc(snd_seq_t* seq_handle, lo_address * transmit_socket
 	    cerr << "\tOSC error " << lo_address_errno(*transmit_socket) << ": " << lo_address_errstr(*transmit_socket) << endl;
 	  }  
 	  break;
+	case SND_SEQ_EVENT_START:
+	  if (arguments.verbose) {
+	    cout << "\tAlsa  Start";
+	  }
+	  if (lo_send(*transmit_socket, "/oscmidi/start", "i", 1) == -1) {
+	    cerr << "\tOSC error " << lo_address_errno(*transmit_socket) << ": " << lo_address_errstr(*transmit_socket) << endl;
+	  }  
+	  break;
+	case SND_SEQ_EVENT_CONTINUE:
+	  if (arguments.verbose) {
+	    cout << "\tAlsa  Continue";
+	  }
+	  if (lo_send(*transmit_socket, "/oscmidi/continue", "i", 1) == -1) {
+	    cerr << "\tOSC error " << lo_address_errno(*transmit_socket) << ": " << lo_address_errstr(*transmit_socket) << endl;
+	  }  
+	  break;
+	case SND_SEQ_EVENT_STOP:
+	  if (arguments.verbose) {
+	    cout << "\tAlsa  Stop";
+	  }
+	  if (lo_send(*transmit_socket, "/oscmidi/stop", "i", 1) == -1) {
+	    cerr << "\tOSC error " << lo_address_errno(*transmit_socket) << ": " << lo_address_errstr(*transmit_socket) << endl;
+	  }  
+	  break;
 	default:
 	  if (arguments.verbose)
 	    cout << "\tAlsa  Unknown command  \t";
