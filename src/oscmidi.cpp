@@ -32,8 +32,8 @@
 
 using namespace std;
 
-#define OSCMIDI_VERSION "0.666"
-#define OSCMIDI_CONTACT "satan@heaven.mil"
+#define OSCMIDI_VERSION "1.0"
+#define OSCMIDI_CONTACT "ycollette@free.fr"
 
 bool run;
 int port_out_id;
