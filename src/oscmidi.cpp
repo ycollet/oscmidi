@@ -37,7 +37,9 @@ using namespace std;
 
 bool run;
 int port_out_id;
+int queue_id;
 snd_seq_t *seq;
+int queue_used;
 
 // +-----------------+
 // | Program options |
@@ -366,9 +368,9 @@ int process_incoming_osc(const char *path, const char *types, lo_arg ** argv,
 	cout << "\t" << (int)ev.data.note.note << "\t" << (int)ev.data.note.velocity << endl;
       }             				
     } else if (std::strcmp(path, "/oscmidi/cc") == 0 && argc == 3) {
-      if(types[2] == 'i')
+      if (types[2] == 'i')
         snd_seq_ev_set_controller(&ev, argv[0]->i, argv[1]->i, argv[2]->i);
-      else if(types[2] == 'f')
+      else if (types[2] == 'f')
         snd_seq_ev_set_controller(&ev, argv[0]->i, argv[1]->i, argv[2]->f);
       if (arguments.verbose) {
 	cout << "\tOSC  Controller Change\t" << (int)ev.data.control.channel;
@@ -391,6 +393,58 @@ int process_incoming_osc(const char *path, const char *types, lo_arg ** argv,
       if (arguments.verbose) {
 	cout << "\tOSC  Pitch bend       \t" << (int)ev.data.control.channel;
 	cout << "\t" << (int)ev.data.control.value << endl;
+      }
+    } else if (std::strcmp(path, "/oscmidi/start") == 0) {
+      snd_seq_ev_set_pitchbend(&ev, argv[0]->i, (argv[1]->i - 8192));
+      if (arguments.verbose) {
+	cout << "\tOSC  Start";
+      }
+      
+      if (queue_used == 0) {
+        queue_id = snd_seq_alloc_queue(seq);
+        if (queue_id < 0) {
+	  if (arguments.verbose) {
+	    cout << "\tOSC  Start - ERROR";
+	  }
+        }
+	if (0) {
+	  snd_seq_queue_tempo_t *tempo;
+	  
+	  snd_seq_queue_tempo_alloca(&tempo);
+	  snd_seq_queue_tempo_set_tempo(tempo, 480000);
+	  snd_seq_queue_tempo_set_ppq(tempo, 480);
+	  int error = snd_seq_set_queue_tempo(seq, queue_id, tempo);
+	  if (error < 0) {
+	    if (arguments.verbose) {
+	      cout << "\tOSC  Start - Set tempo error";
+	    }
+	  }
+	}
+	
+        snd_seq_start_queue(seq, queue_id, NULL);
+        snd_seq_drain_output(seq);
+      }
+      queue_used = 1;
+    } else if (std::strcmp(path, "/oscmidi/continue") == 0) {
+      snd_seq_ev_set_pitchbend(&ev, argv[0]->i, (argv[1]->i - 8192));
+      if (arguments.verbose) {
+	cout << "\tOSC  Continue";
+      }
+      
+      if (queue_used == 1) {
+        snd_seq_continue_queue(seq, queue_id, NULL);
+        snd_seq_drain_output(seq);
+      }
+    } else if (std::strcmp(path, "/oscmidi/stop") == 0) {
+      snd_seq_ev_set_pitchbend(&ev, argv[0]->i, (argv[1]->i - 8192));
+      if (arguments.verbose) {
+	cout << "\tOSC  Stop";
+      }
+      
+      if (queue_used == 1) {
+        snd_seq_stop_queue(seq, queue_id, NULL);
+        snd_seq_free_queue(seq, queue_id);
+	queue_used = 0;
       }
     } else if (std::strcmp(path, "/oscmidi") == 0 ) {
       if ( std::strcmp(&(argv[0]->s), "pitchbend" ) == 0) {
@@ -432,6 +486,7 @@ int main(int argc, char** argv)
   process_options(argc, argv);
   
   if (arguments.exit) return 0;
+  queue_used = 0;
   
   /*
    * Open MIDI ports
