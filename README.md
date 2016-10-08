@@ -35,6 +35,12 @@ OSC messages managed by oscmidi:
  - MIDI Continue          (SND_SEQ_EVENT_CONTINUE):   "/oscmidi/continue"  + 1
  - MIDI Start             (SND_SEQ_EVENT_STOP):       "/oscmidi/stop"      + 1
 
+Type of the following parameters:
+ - <control channel>: int32
+ - <note>: int32
+ - <velocity>: int32
+ - <value>: int32 or float32 (for Controller Changer, type can be int32 or float32)
+
 Copyright (C) 2011  Jari Suominen (Original author)
 
 Copyright (C) 2014  Yann Collette (CMake + some changes in the code)
